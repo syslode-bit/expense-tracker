@@ -52,13 +52,16 @@ function Dashboard() {
   }, [loadData]);
 
   if (loading) {
-    return <p className="status-message">Loading...</p>;
+    return (
+      <div className="loading-screen">
+        <div className="spinner" />
+        <p>Loading your dashboard...</p>
+      </div>
+    );
   }
 
   return (
     <div>
-      <h1>Expense Manager</h1>
-
       {error && <p className="error-message">{error}</p>}
 
       <IncomeForm income={dashboard.income} onIncomeUpdated={loadData} />
@@ -85,9 +88,10 @@ function Dashboard() {
         spending={dashboard.spending}
       />
 
-      <ExpenseForm categories={categories} onExpenseAdded={loadData} />
-
-      <ExpenseList expenses={expenses} onExpenseDeleted={loadData} />
+      <div className="main-grid">
+        <ExpenseForm categories={categories} onExpenseAdded={loadData} />
+        <ExpenseList expenses={expenses} onExpenseDeleted={loadData} />
+      </div>
     </div>
   );
 }

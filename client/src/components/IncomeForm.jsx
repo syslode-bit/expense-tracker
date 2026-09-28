@@ -19,41 +19,46 @@ function IncomeForm({ income, onIncomeUpdated }) {
     }
   }
 
-  if (!editing) {
-    return (
-      <div className="card income-display">
-        <span>Monthly Income: ₹{income.toLocaleString("en-IN")}</span>
-        <button onClick={() => setEditing(true)}>Update</button>
-      </div>
-    );
-  }
-
   return (
-    <form className="card income-form" onSubmit={handleSubmit}>
-      <label>
-        Monthly Income (₹)
-        <input
-          type="number"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          min="0.01"
-          step="0.01"
-          required
-        />
-      </label>
-      <button type="submit">Save</button>
-      {income != null && (
-        <button
-          type="button"
-          className="secondary"
-          onClick={() => setEditing(false)}
-          style={{ marginLeft: 8 }}
-        >
-          Cancel
-        </button>
+    <div className="hero-liquid">
+      <span className="hero-eyebrow">💰 Expense Manager</span>
+
+      {!editing ? (
+        <>
+          <h1 className="hero-headline">₹{income.toLocaleString("en-IN")}</h1>
+          <p className="hero-sub">Your monthly income</p>
+          <button className="pill-dark" onClick={() => setEditing(true)}>
+            Update Income
+          </button>
+        </>
+      ) : (
+        <form className="hero-form" onSubmit={handleSubmit}>
+          <p className="hero-sub">Set your monthly income (₹)</p>
+          <input
+            className="hero-input"
+            type="number"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            min="0.01"
+            step="0.01"
+            placeholder="50,000"
+            required
+            autoFocus
+          />
+          <div className="hero-form-actions">
+            <button type="submit" className="pill-dark">
+              Save
+            </button>
+            {income != null && (
+              <button type="button" className="pill-outline-dark" onClick={() => setEditing(false)}>
+                Cancel
+              </button>
+            )}
+          </div>
+          {error && <p className="hero-error">{error}</p>}
+        </form>
       )}
-      {error && <p className="error-message">{error}</p>}
-    </form>
+    </div>
   );
 }
 

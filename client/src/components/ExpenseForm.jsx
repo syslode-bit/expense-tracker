@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createExpense } from "../services/api";
+import { getCategoryIcon } from "../utils/categoryIcons";
 
 function ExpenseForm({ categories, onExpenseAdded }) {
   const [amount, setAmount] = useState("");
@@ -33,19 +34,7 @@ function ExpenseForm({ categories, onExpenseAdded }) {
 
   return (
     <form className="card expense-form" onSubmit={handleSubmit}>
-      <h2>Add Expense</h2>
-
-      <label>
-        Amount (₹)
-        <input
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          min="0.01"
-          step="0.01"
-          required
-        />
-      </label>
+      <h2>➕ Add Expense</h2>
 
       <label>
         Description
@@ -53,32 +42,48 @@ function ExpenseForm({ categories, onExpenseAdded }) {
           type="text"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          placeholder="e.g. Dinner with friends"
           required
         />
       </label>
 
-      <label>
-        Category
-        <select value={category} onChange={(e) => setCategory(e.target.value)} required>
-          <option value="" disabled>
-            Select a category
-          </option>
-          <optgroup label="Needs">
-            {needCategories.map((c) => (
-              <option key={c.name} value={c.name}>
-                {c.name}
-              </option>
-            ))}
-          </optgroup>
-          <optgroup label="Wants">
-            {wantCategories.map((c) => (
-              <option key={c.name} value={c.name}>
-                {c.name}
-              </option>
-            ))}
-          </optgroup>
-        </select>
-      </label>
+      <div className="form-row">
+        <label>
+          Amount (₹)
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            min="0.01"
+            step="0.01"
+            placeholder="0.00"
+            required
+          />
+        </label>
+
+        <label>
+          Category
+          <select value={category} onChange={(e) => setCategory(e.target.value)} required>
+            <option value="" disabled>
+              Select
+            </option>
+            <optgroup label="Needs">
+              {needCategories.map((c) => (
+                <option key={c.name} value={c.name}>
+                  {getCategoryIcon(c.name)} {c.name}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="Wants">
+              {wantCategories.map((c) => (
+                <option key={c.name} value={c.name}>
+                  {getCategoryIcon(c.name)} {c.name}
+                </option>
+              ))}
+            </optgroup>
+          </select>
+        </label>
+      </div>
 
       <button type="submit">Add Expense</button>
 
