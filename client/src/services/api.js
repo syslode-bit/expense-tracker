@@ -1,7 +1,11 @@
 // All calls to our backend go through this file, so components never call
 // fetch() directly. If the API base URL ever changes, this is the only
 // place that needs updating.
-const BASE_URL = "http://localhost:5000/api";
+//
+// VITE_API_URL lets the deployed frontend point at wherever the backend
+// actually lives, without hardcoding it. Locally, with no .env file, it
+// falls back to the dev server on port 5000.
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 // Turns a non-2xx response into a thrown Error with the server's message.
 async function handleResponse(response) {
