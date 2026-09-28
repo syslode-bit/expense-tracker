@@ -1,18 +1,6 @@
 import { deleteExpense } from "../services/api";
 import { getCategoryIcon } from "../utils/categoryIcons";
-
-function formatCurrency(amount) {
-  return `₹${amount.toLocaleString("en-IN")}`;
-}
-
-function formatDateTime(isoString) {
-  return new Date(isoString).toLocaleString("en-IN", {
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
+import { formatCurrency, formatDateTime } from "../utils/format";
 
 function ExpenseList({ expenses, onExpenseDeleted }) {
   async function handleDelete(id) {

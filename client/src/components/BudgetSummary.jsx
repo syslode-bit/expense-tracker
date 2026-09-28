@@ -1,6 +1,4 @@
-function formatCurrency(amount) {
-  return `₹${amount.toLocaleString("en-IN")}`;
-}
+import { formatCurrency } from "../utils/format";
 
 function BudgetRow({ label, spent, limit, colorName }) {
   const percent = limit > 0 ? Math.min(100, (spent / limit) * 100) : 0;

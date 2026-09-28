@@ -1,13 +1,14 @@
 const { getOrCreateUser } = require("../services/userService");
+const asyncHandler = require("../utils/asyncHandler");
 
 // GET /api/income
-async function getIncome(req, res) {
+const getIncome = asyncHandler(async (req, res) => {
   const user = await getOrCreateUser();
   res.json({ monthlyIncome: user.monthlyIncome });
-}
+});
 
 // PUT /api/income
-async function updateIncome(req, res) {
+const updateIncome = asyncHandler(async (req, res) => {
   const { monthlyIncome } = req.body;
 
   if (typeof monthlyIncome !== "number" || Number.isNaN(monthlyIncome)) {
@@ -22,6 +23,6 @@ async function updateIncome(req, res) {
   await user.save();
 
   res.json({ monthlyIncome: user.monthlyIncome });
-}
+});
 
 module.exports = { getIncome, updateIncome };

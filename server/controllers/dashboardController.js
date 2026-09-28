@@ -1,21 +1,21 @@
 const Expense = require("../models/Expense");
 const { getOrCreateUser } = require("../services/userService");
 const { getPeriodRange, getThisMonthRange } = require("../utils/dateUtils");
+const asyncHandler = require("../utils/asyncHandler");
 
 // GET /api/dashboard?period=today|week|month (defaults to "month")
-async function getDashboard(req, res) {
+const getDashboard = asyncHandler(async (req, res) => {
   const period = req.query.period || "month";
   const range = getPeriodRange(period);
   if (!range) {
     return res.status(400).json({ error: "period must be one of: today, week, month" });
   }
 
-  const user = await getOrCreateUser();
+  const [user, periodExpenses] = await Promise.all([
+    getOrCreateUser(),
+    Expense.find({ createdAt: { $gte: range.start, $lte: range.end } }),
+  ]);
   const income = user.monthlyIncome;
-
-  const periodExpenses = await Expense.find({
-    createdAt: { $gte: range.start, $lte: range.end },
-  });
 
   const spending = periodExpenses.reduce(
     (totals, expense) => {
@@ -59,6 +59,6 @@ async function getDashboard(req, res) {
     budget,
     wantsLimitExceeded,
   });
-}
+});
 
 module.exports = { getDashboard };

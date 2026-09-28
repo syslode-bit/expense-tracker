@@ -3,9 +3,10 @@ const { getCategoryType, getAllCategories } = require("../services/categoryServi
 const { getOrCreateUser } = require("../services/userService");
 const { getPeriodRange } = require("../utils/dateUtils");
 const { checkIsUnusual } = require("../services/unusualExpenseService");
+const asyncHandler = require("../utils/asyncHandler");
 
 // POST /api/expenses
-async function createExpense(req, res) {
+const createExpense = asyncHandler(async (req, res) => {
   const { amount, description, category } = req.body;
 
   if (typeof amount !== "number" || Number.isNaN(amount) || amount <= 0) {
@@ -24,8 +25,10 @@ async function createExpense(req, res) {
     });
   }
 
-  const user = await getOrCreateUser();
-  const isUnusual = await checkIsUnusual(category, amount);
+  const [user, isUnusual] = await Promise.all([
+    getOrCreateUser(),
+    checkIsUnusual(category, amount),
+  ]);
 
   const expense = await Expense.create({
     userId: user._id,
@@ -37,11 +40,11 @@ async function createExpense(req, res) {
   });
 
   res.status(201).json(expense);
-}
+});
 
 // GET /api/expenses
 // GET /api/expenses?period=today|week|month
-async function getExpenses(req, res) {
+const getExpenses = asyncHandler(async (req, res) => {
   const { period } = req.query;
   let filter = {};
 
@@ -55,15 +58,19 @@ async function getExpenses(req, res) {
 
   const expenses = await Expense.find(filter).sort({ createdAt: -1 });
   res.json(expenses);
-}
+});
 
 // DELETE /api/expenses/:id
-async function deleteExpense(req, res) {
+const deleteExpense = asyncHandler(async (req, res) => {
+  if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    return res.status(400).json({ error: "invalid expense id" });
+  }
+
   const expense = await Expense.findByIdAndDelete(req.params.id);
   if (!expense) {
     return res.status(404).json({ error: "expense not found" });
   }
   res.json({ message: "expense deleted" });
-}
+});
 
 module.exports = { createExpense, getExpenses, deleteExpense };

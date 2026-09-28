@@ -1,6 +1,4 @@
-function formatCurrency(amount) {
-  return `₹${amount.toLocaleString("en-IN")}`;
-}
+import { formatCurrency } from "../utils/format";
 
 function SpendingSummary({ spending }) {
   return (
